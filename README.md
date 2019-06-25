@@ -1,4 +1,4 @@
-# rollup-plugin-auto-inject-version
+# rollup-plugin-version-injector
 rollup.js plugin to auto inject the version into the source code. 
 
 ### Credits
