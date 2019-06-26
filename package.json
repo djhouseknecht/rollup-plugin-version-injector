@@ -4,6 +4,7 @@
   "description": "rollup.js plugin to auto inject the version into the source code",
   "main": "dist/rollup-plugin-version-injector.cjs.js",
   "module": "dist/rollup-plugin-version-injector.es.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc && rollup -c",
     "test": "jest",
@@ -21,7 +22,8 @@
     "rollup-plugin",
     "es2015",
     "npm",
-    "modules"
+    "modules",
+    "version"
   ],
   "author": "David Houseknecht <david.j.houseknecht@gmail.com>",
   "license": "ISC",

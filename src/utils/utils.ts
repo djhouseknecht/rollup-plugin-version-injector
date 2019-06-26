@@ -1,8 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import dateformat from 'dateformat';
-import { SupportedFileExtensions } from '../config/config';
-import { ILogger } from './logger';
+import { ILogger, SupportedFileExtensions } from '../types/interfaces';
 
 /**
  * Utilities for version-injector

@@ -1,22 +1,13 @@
-export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'log';
-
-export interface ILogger {
-  log (...args: any[]): void;
-  debug (...args: any[]): void;
-  info (...args: any[]): void;
-  warn (...args: any[]): void;
-  error (...args: any[]): void;
-}
+import { default as chalk } from 'chalk';
+import { ILogger, LogLevel } from '../types/interfaces';
 
 type LogNumbers = 1 | 2 | 3 | 4;
-
-import { default as chalk } from 'chalk';
 /**
  * Logger class to log, filter what logs are displayed, and store private logs
  */
-export class Logger implements ILogger {
+export class VILogger implements ILogger {
 
-  private readonly DEFAULT_LOG_LEVEL: LogNumbers = 3;
+  private readonly DEFAULT_LOG_LEVEL: LogNumbers = 3; // 'warn'
 
   private logLevel: LogNumbers;
   private internalLog: Array<{ level: LogLevel, log: any }>;
@@ -35,10 +26,10 @@ export class Logger implements ILogger {
 
     let level: LogNumbers | undefined = this.logMap.get(logLevel);
     if (level) {
-      this.debug(`setting logging level to [${logLevel}]`);
+      this.debug(`setting logging level to "${logLevel}"`);
     } else {
       level = this.DEFAULT_LOG_LEVEL;
-      this.warn(`log level passed in was invalid [${logLevel}]. setting log level to default [${level}]`);
+      this.warn(`log level passed in was invalid ("${logLevel}"). setting log level to default ("warn")`);
     }
     this.logLevel = level;
   }
@@ -107,11 +98,11 @@ export class Logger implements ILogger {
 	 */
   private buildMap (): Map<LogLevel, LogNumbers> {
     const map = new Map();
-    map.set('log', 0);
     map.set('debug', 1);
     map.set('info', 2);
     map.set('warn', 3);
     map.set('error', 4);
+    map.set('log', 5);
     return map;
   }
 

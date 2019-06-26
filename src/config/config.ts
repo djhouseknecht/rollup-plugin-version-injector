@@ -1,32 +1,9 @@
-import { LogLevel } from '../utils/logger';
-export interface AutoInjectVersionConfig {
+import { VersionInjectorConfig } from "../types/interfaces";
 
-	/**
-	 * relative path to project's package.json
-	 * @default './package.json'
-	 */
-  packageJson: string;
-
-  injectInComments: false | {
-    fileRegexp: RegExp;
-    tag: string;
-    dateFormat: string;
-  };
-  injectInTags: false | {
-    fileRegexp: RegExp; // supported types: html, css, js
-    tagId: string; // cannot have special characters
-    dateFormat: string;
-  };
-  logLevel: LogLevel;
-  include: string[];
-  exclude: string[];
-}
-
-export type SupportedFileExtensions = 'js' | 'html' | 'css';
-
-export const defaultConfig: AutoInjectVersionConfig = {
+export const defaultConfig: VersionInjectorConfig = {
   packageJson: './package.json',
   logLevel: 'info',
+  logger: console,
   injectInComments: {
     fileRegexp: /\.(js|html|css)$/g,
     tag: 'Version: {version} - {date}',
@@ -37,6 +14,5 @@ export const defaultConfig: AutoInjectVersionConfig = {
     tagId: 'VI',
     dateFormat: 'longDate'
   },
-  include: [],
   exclude: []
 };

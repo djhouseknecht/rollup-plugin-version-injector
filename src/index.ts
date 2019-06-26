@@ -1,19 +1,20 @@
 import fs from 'fs';
 import path from 'path';
-import { defaultConfig, AutoInjectVersionConfig, SupportedFileExtensions } from './config/config';
-import { OutputBundle, OutputOptions, PluginHooks, OutputChunk } from 'rollup';
+import { defaultConfig } from './config/config';
+import { OutputBundle, OutputOptions, Plugin, OutputChunk } from 'rollup';
 import { VIUtils } from './utils/utils';
-import { Logger } from './utils/logger';
+import { VILogger } from './utils/logger';
+import { VersionInjectorConfig, SupportedFileExtensions } from './types/interfaces';
 
 /**
  * Rollup.js plugin that will find and replace verion number and/or date in the source code
  * 	and add a comment at the top of a file with version number and/or date.
  * @param userConfig user configuration
  */
-export default function injectVersion (userConfig: Partial<AutoInjectVersionConfig>) {
+export default function versionInjector (userConfig?: Partial<VersionInjectorConfig>): Partial<Plugin> {
   const pluginName: string = 'version-injector';
-  const config: AutoInjectVersionConfig = Object.assign(defaultConfig, userConfig);
-  const logger: Logger = new Logger(config.logLevel);
+  const config: VersionInjectorConfig = Object.assign(defaultConfig, userConfig);
+  const logger: VILogger = new VILogger(config.logLevel, config.logger);
   const utils: VIUtils = new VIUtils(logger);
 
   let outputOptions: OutputOptions;
@@ -26,10 +27,10 @@ export default function injectVersion (userConfig: Partial<AutoInjectVersionConf
       outputOptions = outOpts;
     },
     writeBundle (outputBundle: OutputBundle) {
+      version = utils.getVersion(config.packageJson);
       logger.log(`${pluginName} started with version "${version}"`);
       logger.debug('config', config);
 
-      version = utils.getVersion(config.packageJson);
       /* skip if no file was output */
       const outputFile = outputOptions.file;
       if (!outputFile) {
@@ -78,7 +79,7 @@ export default function injectVersion (userConfig: Partial<AutoInjectVersionConf
           logger.info(`no tags found in file: "${fileName}"`);
         }
       } else {
-        logger.debug('injectInTages skipped because set to false or fileName did not match expression', config.injectInTags);
+        logger.debug('injectInTages skipped because it was set to "false" or fileName did not match expression', config.injectInTags);
       }
 
       /* check if it should inject in the comments */
@@ -99,7 +100,7 @@ export default function injectVersion (userConfig: Partial<AutoInjectVersionConf
           logger.warn(`file extension not supported for injecting into comments "${fileExt}"`);
         }
       } else {
-        logger.debug('injectInComments skipped because set to false or fileName did not match expression', config.injectInComments);
+        logger.debug('injectInComments skipped because it was set to "false" or fileName did not match expression', config.injectInComments);
       }
 
       if (fileChanged) {
@@ -113,5 +114,5 @@ export default function injectVersion (userConfig: Partial<AutoInjectVersionConf
 
       logger.log(`${pluginName} finished`);
     }
-  } as Partial<PluginHooks>;
+  } as Partial<Plugin>;
 }
