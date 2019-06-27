@@ -1,10 +1,11 @@
-import fs from 'fs';
-import path from 'path';
-import { defaultConfig } from './config/config';
+// import fs from 'fs';
+// import path from 'path';
 import { OutputBundle, OutputOptions, Plugin, OutputChunk } from 'rollup';
-import { VIUtils } from './utils/utils';
+import { merge } from 'lodash';
+import { defaultConfig } from './config/config';
+import { VIInjector } from './utils/injector';
 import { VILogger } from './utils/logger';
-import { VersionInjectorConfig, SupportedFileExtensions } from './types/interfaces';
+import { VersionInjectorConfig } from './types/interfaces';
 
 /**
  * Rollup.js plugin that will find and replace verion number and/or date in the source code
@@ -13,9 +14,9 @@ import { VersionInjectorConfig, SupportedFileExtensions } from './types/interfac
  */
 export default function versionInjector (userConfig?: Partial<VersionInjectorConfig>): Partial<Plugin> {
   const pluginName: string = 'version-injector';
-  const config: VersionInjectorConfig = Object.assign(defaultConfig, userConfig);
+  const config: VersionInjectorConfig = merge({}, defaultConfig, userConfig);
   const logger: VILogger = new VILogger(config.logLevel, config.logger);
-  const utils: VIUtils = new VIUtils(logger);
+  const injector: VIInjector = new VIInjector(logger);
 
   let outputOptions: OutputOptions;
   let version: string;
@@ -27,7 +28,7 @@ export default function versionInjector (userConfig?: Partial<VersionInjectorCon
       outputOptions = outOpts;
     },
     writeBundle (outputBundle: OutputBundle) {
-      version = utils.getVersion(config.packageJson);
+      version = injector.getVersion(config.packageJson);
       logger.log(`${pluginName} started with version "${version}"`);
       logger.debug('config', config);
 
@@ -56,58 +57,15 @@ export default function versionInjector (userConfig?: Partial<VersionInjectorCon
         return;
       }
 
-      /* get the bundle */
-      const bundle: OutputChunk = tmpBundle as OutputChunk;
-      let code = bundle.code;
-      let fileChanged = false;
+      /* get the code from the bundle */
+      let code = (tmpBundle as OutputChunk).code;
 
-      /* check if it should inject in the comments */
-      if (config.injectInTags && config.injectInTags.fileRegexp.test(fileName)) {
-        let results = utils.injectIntoTags(
-          config.injectInTags.tagId,
-          config.injectInTags.dateFormat,
-          version,
-          code
-        );
+      injector.setCode(code);
+      injector.injectIntoTags(config.injectInTags, fileName, version);
+      injector.injectIntoComments(config.injectInComments, fileName, version);
 
-        /* if it made changes */
-        if (results.replaceCount) {
-          fileChanged = true;
-          code = results.code;
-          logger.log(`found and replaced [${results.replaceCount}] version tags in`, fileName);
-        } else {
-          logger.info(`no tags found in file: "${fileName}"`);
-        }
-      } else {
-        logger.debug('injectInTages skipped because it was set to "false" or fileName did not match expression', config.injectInTags);
-      }
-
-      /* check if it should inject in the comments */
-      if (config.injectInComments && config.injectInComments.fileRegexp.test(fileName)) {
-        let fileExt: SupportedFileExtensions | null = utils.getFileExtension(fileName);
-
-        if (fileExt) {
-          fileChanged = true;
-          code = utils.injectIntoComments(
-            config.injectInComments.tag,
-            config.injectInComments.dateFormat,
-            version,
-            fileExt,
-            code
-          );
-          logger.info(`injected version as comment`);
-        } else {
-          logger.warn(`file extension not supported for injecting into comments "${fileExt}"`);
-        }
-      } else {
-        logger.debug('injectInComments skipped because it was set to "false" or fileName did not match expression', config.injectInComments);
-      }
-
-      if (fileChanged) {
-        logger.debug('file was changed, attempting to write new file');
-        const finalFile = path.resolve(process.cwd(), outputFile);
-        fs.writeFileSync(finalFile, code);
-        logger.log(`write successful. injected version into file: ${finalFile}`);
+      if (injector.isCodeChanged()) {
+        injector.writeToFile(outputFile);
       } else {
         logger.log(`file was not changed. did not write to file "${fileName}"`);
       }

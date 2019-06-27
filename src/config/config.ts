@@ -1,9 +1,6 @@
 import { VersionInjectorConfig } from "../types/interfaces";
 
 export const defaultConfig: VersionInjectorConfig = {
-  packageJson: './package.json',
-  logLevel: 'info',
-  logger: console,
   injectInComments: {
     fileRegexp: /\.(js|html|css)$/g,
     tag: 'Version: {version} - {date}',
@@ -14,5 +11,8 @@ export const defaultConfig: VersionInjectorConfig = {
     tagId: 'VI',
     dateFormat: 'longDate'
   },
+  packageJson: './package.json',
+  logLevel: 'info',
+  logger: console,
   exclude: []
 };

@@ -1,6 +1,6 @@
 import { default as chalk } from 'chalk';
-import { ILogger } from '../../../dist/utils/logger';
 import { VILogger } from '../../../src/utils/logger';
+import { ILogger } from '../../../src/types/interfaces';
 
 describe.only('VILogger', () => {
   let _logger: ILogger;

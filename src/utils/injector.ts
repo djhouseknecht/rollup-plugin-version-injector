@@ -1,14 +1,16 @@
 import fs from 'fs';
 import path from 'path';
 import dateformat from 'dateformat';
-import { ILogger, SupportedFileExtensions } from '../types/interfaces';
+import { ILogger, SupportedFileExtensions, InjectInTagsConfig, InjectInCommentsConfig } from '../types/interfaces';
 
 /**
  * Utilities for version-injector
  */
-export class VIUtils {
+export class VIInjector {
 
   private logger: ILogger;
+  private codeChanged: boolean;
+  private code: string;
 
 	/**
 	 * Construct utilities and pass in the desired logger
@@ -16,6 +18,8 @@ export class VIUtils {
 	 */
   constructor (logger: ILogger) {
     this.logger = logger;
+    this.codeChanged = false;
+    this.code = '';
   }
 
 	/**
@@ -28,6 +32,33 @@ export class VIUtils {
     );
     this.logger.debug(`retrieved package.json path "${packagePath}" and version "${packageFile.version}"`);
     return packageFile.version;
+  }
+
+  /**
+   * Set the class' code to work against
+   * @param code code
+   */
+  public setCode (code: string): void {
+    this.code = code;
+    this.codeChanged = false;
+  }
+
+  /**
+   * Determine if the code has changed
+   */
+  public isCodeChanged (): boolean {
+    return this.codeChanged;
+  }
+
+  /**
+   * Resolve the cwd and relative path to a file to write
+   *  the class' code to that file.
+   * @param outputFile relative path to file
+   */
+  public writeToFile (outputFile: string): void {
+    const finalFile = path.resolve(process.cwd(), outputFile);
+    fs.writeFileSync(finalFile, this.code);
+    this.logger.log(`wrote to file: "${finalFile}"`);
   }
 
 	/**
@@ -54,6 +85,71 @@ export class VIUtils {
     return ext;
   }
 
+  /**
+   * Search the class' code and inject version and/or date into
+   *  the configured tags.
+   * @param config inject in tags config
+   * @param fileName filename of file (to validate file against configured fileRegexp)
+   * @param version version to inject
+   */
+  public injectIntoTags (config: InjectInTagsConfig | false, fileName: string, version: string): void {
+    if (!this.code) {
+      this.logger.error('code not set in VIInjector called from injectIntoTags()');
+    }
+    /* check if it should inject in the comments */
+    if (config && config.fileRegexp.test(fileName)) {
+      let results = this.replaceVersionInTags(
+        config.tagId,
+        config.dateFormat,
+        version,
+        this.code
+      );
+
+      /* if it made changes */
+      if (results.replaceCount) {
+        this.logger.log(`found and replaced [${results.replaceCount}] version tags in`, fileName);
+        this.codeChanged = true;
+        this.code = results.code;
+      } else {
+        this.logger.info(`no tags found in file: "${fileName}"`);
+      }
+    } else {
+      this.logger.debug('injectInTages skipped because it was set to "false" or fileName did not match expression', config);
+    }
+  }
+
+  /**
+   * Insert a comment into the beginning of a file
+   * @param config inject in comments config
+   * @param fileName filename of file (to validate file against configured fileRegexp and file extension)
+   * @param version version to inject
+   */
+  public injectIntoComments (config: InjectInCommentsConfig | false, fileName: string, version: string): void {
+    if (!this.code) {
+      this.logger.error('code not set in VIInjector called from injectIntoComments()');
+    }
+    /* check if it should inject in the comments */
+    if (config && config.fileRegexp.test(fileName)) {
+      let fileExt: SupportedFileExtensions | null = this.getFileExtension(fileName);
+
+      if (fileExt) {
+        this.code = this.replaceVersionInComments(
+          config.tag,
+          config.dateFormat,
+          version,
+          fileExt,
+          this.code
+        );
+        this.codeChanged = true;
+        this.logger.info(`injected version as comment`);
+      } else {
+        this.logger.warn(`file extension not supported for injecting into comments "${fileExt}"`);
+      }
+    } else {
+      this.logger.debug('injectIntoComments skipped because it was set to "false" or fileName did not match expression', config);
+    }
+  }
+
 	/**
 	 * Inject the version number and/or date into the passed in code. Version
 	 * 	and/or date must be within the opening (`[${tagId}]`) and closing (`[/${tagId}]`) tags.
@@ -62,7 +158,7 @@ export class VIUtils {
 	 * @param version verions to be injecte3d
 	 * @param code code to inject into
 	 */
-  public injectIntoTags (tagId: string, dateFormat: string, version: string, code: string): { code: string, replaceCount: number } {
+  private replaceVersionInTags (tagId: string, dateFormat: string, version: string, code: string): { code: string, replaceCount: number } {
     this.logger.debug(`starting injectIntoTags() with args: { tagId: "${tagId}", dateFormat: ${dateFormat}, version: ${version}, code: "${code ? code.substring(0, 12) + '...' : code}" }`);
     let replaceCount: number = 0;
     const pattern = this.buildTagRegexp(tagId);
@@ -99,7 +195,7 @@ export class VIUtils {
 	 * @param fileType file type
 	 * @param code code to inject into
 	 */
-  public injectIntoComments (tag: string, dateFormat: string, version: string, fileExtension: SupportedFileExtensions, code: string): string {
+  private replaceVersionInComments (tag: string, dateFormat: string, version: string, fileExtension: SupportedFileExtensions, code: string): string {
     this.logger.debug(`starting injectIntoComments() with args: { tag: "${tag}", dateFormat: "${dateFormat}", version: "${version}", fileExtension: "${fileExtension}", code: "${code ? code.substring(0, 12) + '...' : code}" }`);
     let injectValue = this.replaceVersion(tag, version);
     injectValue = this.replaceDate(injectValue, dateFormat);

@@ -5,23 +5,24 @@ export interface VersionInjectorConfig {
 	 * @default './package.json'
 	 */
   packageJson: string;
-
-  injectInComments: false | {
-    fileRegexp: RegExp;
-    tag: string;
-    dateFormat: string;
-  };
-  injectInTags: false | {
-    fileRegexp: RegExp; // supported types: html, css, js
-    tagId: string; // cannot have special characters
-    dateFormat: string;
-  };
+  injectInComments: false | InjectInCommentsConfig;
+  injectInTags: false | InjectInTagsConfig;
   logLevel: LogLevel;
   logger: ILogger;
   exclude: string[];
 }
 
-export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'log';
+export interface InjectInTagsConfig {
+  fileRegexp: RegExp; // supported types: html, css, js
+  tagId: string; // cannot have special characters
+  dateFormat: string;
+}
+
+export interface InjectInCommentsConfig {
+  fileRegexp: RegExp;
+  tag: string;
+  dateFormat: string;
+}
 
 export interface ILogger {
   log (...args: any[]): void;
@@ -31,4 +32,5 @@ export interface ILogger {
   error (...args: any[]): void;
 }
 
+export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'log';
 export type SupportedFileExtensions = 'js' | 'html' | 'css';
