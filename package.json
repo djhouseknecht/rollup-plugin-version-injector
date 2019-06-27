@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-version-injector",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "rollup.js plugin to auto inject the version into the source code",
   "main": "dist/rollup-plugin-version-injector.cjs.js",
   "module": "dist/rollup-plugin-version-injector.es.js",
