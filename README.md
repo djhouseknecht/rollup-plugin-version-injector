@@ -73,7 +73,7 @@ It will only look between the configured `tagId`s. For example, the default `tag
 ```js 
   '[VI]Version: {version} - build on {date}[/VI]'
 ``` 
-If will only replace the `{version}` and `{date}` found within those `tagId`s. 
+It will only replace the `{version}` and `{date}` found within those `tagId`s. 
 
 #### As comment
 It will replace the `{version}` and `{date}` found in the configured `tag`. For example, the default configured `tag` is:
@@ -115,7 +115,7 @@ Can be set to `false` or an object with one or more of the following properties:
 }
 ```
 
-All available date formats can be found at [datefromat's](https://www.npmjs.com/package/dateformat) npm homepage. 
+All available date formats can be found at [dateformat's](https://www.npmjs.com/package/dateformat) npm homepage. 
 
 #### injectInTags
 Can be set to `false` or an object with one or more of the following properties: 
