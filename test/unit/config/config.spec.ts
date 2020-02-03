@@ -8,12 +8,12 @@ describe('Config', () => {
       injectInComments: {
         fileRegexp: /\.(js|html|css)$/g,
         tag: 'Version: {version} - {date}',
-        dateFormat: 'longDate'
+        dateFormat: 'mmmm d, yyyy HH:MM:ss'
       },
       injectInTags: {
         fileRegexp: /\.(js|html|css)$/g,
         tagId: 'VI',
-        dateFormat: 'longDate'
+        dateFormat: 'mmmm d, yyyy HH:MM:ss'
       },
       exclude: []
     };

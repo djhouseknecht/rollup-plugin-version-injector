@@ -1,7 +1,7 @@
 {
   "name": "rollup-plugin-version-injector",
-  "version": "1.1.3",
-  "description": "rollup.js plugin to auto inject the version into the source code",
+  "version": "1.2.0",
+  "description": "A simple rollup.js plugin to inject your application's version number and/or today's date into your built js, html, and css files!",
   "main": "dist/rollup-plugin-version-injector.cjs.js",
   "module": "dist/rollup-plugin-version-injector.es.js",
   "types": "dist/index.d.ts",
@@ -23,11 +23,12 @@
   },
   "keywords": [
     "rollup",
+    "rollupjs",
     "rollup-plugin",
-    "es2015",
-    "npm",
-    "modules",
-    "version"
+    "version",
+    "inject",
+    "build",
+    "bundle"
   ],
   "author": "David Houseknecht <david.j.houseknecht@gmail.com>",
   "license": "ISC",
@@ -39,6 +40,11 @@
     "src/"
   ],
   "homepage": "https://github.com/djhouseknecht/rollup-plugin-version-injector#readme",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "dateformat": "^3.0.3",
+    "lodash": "^4.17.15"
+  },
   "devDependencies": {
     "@types/dateformat": "^3.0.0",
     "@types/jest": "^24.0.15",
@@ -53,11 +59,6 @@
     "tslib": "^1.10.0",
     "tslint": "^5.18.0",
     "tslint-config-semistandard": "^8.0.1",
-    "typescript": "^3.5.2"
-  },
-  "dependencies": {
-    "chalk": "^2.4.2",
-    "dateformat": "^3.0.3",
-    "lodash": "^4.17.15"
+    "typescript": "~3.6.5"
   }
 }

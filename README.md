@@ -1,5 +1,5 @@
 # rollup-plugin-version-injector
-A simple [rollup.js](https://rollupjs.org/guide/en) plugin to inject your application's version number and/or today's date into your built `js`, `html`, and `css` files!
+A simple [rollup.js] plugin to inject your application's version number and/or today's date into your built `js`, `html`, and `css` files!
 
 ## Getting started
 
@@ -11,7 +11,6 @@ npm i --save-dev rollup-plugin-version-injector
 Add it to your `rollup.config.js` build configuration. 
 
 ``` js 
-// import version-injector
 import versionInjector from 'rollup-plugin-version-injector';
 // or
 const versionInjector = require('rollup-plugin-version-injector');
@@ -27,7 +26,7 @@ export default {
 
 Then you can add tags to your source code and it will inject the version where you specified. Example: 
 
-**src/app.js** (fake file)
+**src/app.js** (example file)
 ```js 
 export class MyApp {
   getVersion() { 
@@ -39,20 +38,20 @@ export class MyApp {
 
 **version-injector** (**VI**) will replace that code in your built source to return the following: 
 
-**dist/built-app.js** (fake build file)
+**build/built-app.js** (example build file)
 ```js 
 export class MyApp {
   getVersion() { 
-    return '1.2.1 - June 27, 2019';
+    return '1.2.1 - June 9, 2007 17:46:12';
   }
   // other code
 }
 ```
 VI will also inject the version into your files as a comment. Example: 
 
-**dist/index.html** (fake file)
+**build/index.html** (example file)
 ``` html
-<!-- Version: 1.2.1 - June 27, 2019 -->
+<!-- Version: 1.2.1 - June 9, 2007 17:46:12 -->
 <!DOCTYPE html>
 <html lang="en">
   ...
@@ -60,30 +59,40 @@ VI will also inject the version into your files as a comment. Example:
 ```
 ## Basic Usage
 
-VI has two functions. It will Inject the version number and/or today's date into your generated files as:
-1. [Defined tags in your source code.](####as-comment)
-2. [A comment at the top of the file.](####in-source-code)
+VI has two uses -- it will Inject the version number and/or today's date into your generated files in:
+1. [Defined tags in your source code.](####injected-in-the-source-code)
+2. [A comment at the top of the file.](####as-a-comment)
 
-VI will replace `{version}` with the version listed in your `package.json` and `{date}` with today's date in the format specified in the [configuration](##configuration). 
+VI will replace `'{version}'` with the version found in your `package.json` and `'{date}'` with today's date in the format specified in the [configuration].
 
 > VI supports injecting the version into all `js`, `html`, and `css` files output by rollup. 
 
-#### In source code
-It will only look between the configured `tagId`s. For example, the default `tagId` is `VI` so VI is looking for: 
+## Injected in the source code
+VI will only look between the configured `tagId`s. For example, the default `tagId` is `VI` so VI is looking for: 
 ```js 
-  '[VI]Version: {version} - build on {date}[/VI]'
+// string in your javascript file
+const VERSION = '[VI]Version: {version} - built on {date}[/VI]';
 ``` 
-It will only replace the `{version}` and `{date}` found within those `tagId`s. 
+VI will only replace the `'{version}'` and `'{date}'` found within those `tagId`s. 
+```js 
+// output after VI has run
+const VERSION = 'Version: 1.2.1 - built on June 9, 2007 17:46:12';
+``` 
 
-#### As comment
-It will replace the `{version}` and `{date}` found in the configured `tag`. For example, the default configured `tag` is:
+You can change the date format, tagId, and which files to look in using the [configuration] object passed into the `versionInjector()` function. 
+
+## As a comment
+It will replace the `'{version}'` and `'{date}'` found in the configured `tag`. For example, the default configured `tag` is:
 ```js
 tag: 'Version: {version} - {date}'
 ```
 
+You can change the date format, tag, and which files to inject the comment into using the [configuration] object passed into the `versionInjector()` function. 
+
+
 ## Configuration
 
-Anything not specified in your configuration will use the default configuration.  
+Anything not specified/overwritten in your `versionInjector()` configuration will use the default configuration. 
 
 **default config**
 ```js 
@@ -91,12 +100,12 @@ Anything not specified in your configuration will use the default configuration.
   injectInComments: {
     fileRegexp: /\.(js|html|css)$/g,
     tag: 'Version: {version} - {date}',
-    dateFormat: 'longDate'
+    dateFormat: 'mmmm d, yyyy HH:MM:ss'
   },
   injectInTags: {
     fileRegexp: /\.(js|html|css)$/g,
     tagId: 'VI',
-    dateFormat: 'longDate'
+    dateFormat: 'mmmm d, yyyy HH:MM:ss'
   },
   packageJson: './package.json',
   logLevel: 'info',
@@ -105,33 +114,44 @@ Anything not specified in your configuration will use the default configuration.
 };
 ```
 
-#### injectInComments
-Can be set to `false` or an object with one or more of the following properties: 
-```js 
-{
-  fileRegexp: // Regexp for files to match against
-  tag: // string of tag to be injected
-  dateFormat: // string of date format 
-}
-```
-
-All available date formats can be found at [dateformat's](https://www.npmjs.com/package/dateformat) npm homepage. 
+All available date formats can be found at [dateformat]. 
 
 #### injectInTags
-Can be set to `false` or an object with one or more of the following properties: 
-```js 
-{
-  fileRegexp: // Regexp for files to match against
-  tagId: // string of the tagId to look for
-  dateFormat: // string of date format 
-}
+The following properties are available:
+```typescript 
+versionInjector({
+  injectInTags: false /* or */ {
+    // Regexp for files to match against
+    fileRegexp: Regex 
+    // string of the tagId to look for
+    // Ex: 'ACK' => VI will look for '[ACK]...[/ACK]'
+    tagId: string 
+    // string of valid dateformat 
+    dateFormat: string 
+  }
+})
 ```
 > **Note:** The `tagId` will be wrapped in opening and closing brackets.  Example: `[tagId][/tagId]`
 
-All available date formats can be found at [datefromat's](https://www.npmjs.com/package/dateformat) npm homepage. 
+All available date formats can be found at [dateformat]. 
+
+#### injectInComments
+The following properties are available:
+```typescript 
+versionInjector({
+  injectInComments: false /* or */ {
+    // Regexp for files to match against
+    fileRegexp: Regex 
+    // string of tag to be injected
+    tagId: string 
+    // string of valid dateformat 
+    dateFormat: string 
+  }
+})
+```
 
 #### packageJson
-This is the relative path to your `package.json` file. Default is `'./package.json'`. 
+This is the relative path to your `package.json` file from your rollup config file. Default is `'./package.json'`. 
 
 #### logLevel
 This is the log levels for verion-injector. Default value is `'info'`. Available values are:
@@ -146,4 +166,10 @@ Default is the `console`, but can be any logger you prefer that matches the [`IL
 This is an array of specific files you want to exclude from any processing. This must be the full file name without the path. 
 
 ## Credits
-This is essentially a less fancy port of the [webpack-auto-inject-version](https://github.com/radswiat/webpack-auto-inject-version).
+This is essentially a less fancy port of the [webpack-auto-inject-version].
+
+[rollup.js]: https://rollupjs.org/guide/en
+[dateformat]: https://www.npmjs.com/package/dateformat
+[dateformat's]: https://www.npmjs.com/package/dateformat
+[webpack-auto-inject-version]: https://github.com/radswiat/webpack-auto-inject-version
+[configuration]: ##configuration
