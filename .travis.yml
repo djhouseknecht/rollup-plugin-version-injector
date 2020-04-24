@@ -1,0 +1,33 @@
+language: node_js
+node_js:
+  - node
+  - 12
+  - 10
+
+cache: npm
+
+# skip version branches (ie. v1.1.1)
+branches:
+  except:
+    - '/^v\d+\.\d+\.\d+$/'
+
+# install deps
+install:
+  - npm install
+
+jobs:
+  include:
+    # Test, Lint, and Report Coverage
+    - stage: "Test"
+      script:
+        - npm run test
+        - npm run lint
+        - npm run codecov
+        - npm run build
+    # build and release
+    - stage: "Release"
+      if: branch == master && !fork
+      node_js: 12
+      script:
+        - npm run build
+        - npx semantic-release

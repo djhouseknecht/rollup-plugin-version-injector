@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-version-injector",
-  "version": "1.2.0",
+  "version": "0.0.0-development",
   "description": "A simple rollup.js plugin to inject your application's version number and/or today's date into your built js, html, and css files!",
   "main": "dist/rollup-plugin-version-injector.cjs.js",
   "module": "dist/rollup-plugin-version-injector.es.js",
@@ -11,7 +11,10 @@
     "test:watch": "jest --watch --collectCoverage=false",
     "lint": "npm run lint:js && npm run lint:ts",
     "lint:js": "semistandard",
-    "lint:ts": "tslint --project . --config tslint.json"
+    "lint:ts": "tslint --project . --config tslint.json",
+    "semantic-release": "semantic-release",
+    "commit": "git-cz",
+    "codecov": "codecov"
   },
   "pre-push": [
     "build",
@@ -19,7 +22,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/djhouseknecht/rollup-plugin-version-injector.git"
+    "url": "https://github.com/djhouseknecht/rollup-plugin-version-injector.git"
   },
   "keywords": [
     "rollup",
@@ -35,6 +38,11 @@
   "bugs": {
     "url": "https://github.com/djhouseknecht/rollup-plugin-version-injector/issues"
   },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
   "files": [
     "dist/",
     "src/"
@@ -46,18 +54,20 @@
     "lodash": "^4.17.15"
   },
   "devDependencies": {
-    "@types/dateformat": "^3.0.0",
-    "@types/jest": "^24.0.15",
-    "@types/lodash": "^4.14.134",
-    "@types/node": "^12.0.8",
-    "jest": "^24.8.0",
+    "@types/dateformat": "^3.0.1",
+    "@types/jest": "^24.9.1",
+    "@types/lodash": "^4.14.150",
+    "@types/node": "^12.12.37",
+    "codecov": "^3.6.5",
+    "jest": "^24.9.0",
     "pre-push": "^0.1.1",
-    "rollup": "^1.15.6",
+    "rollup": "^1.32.1",
     "rollup-plugin-typescript": "^1.0.1",
+    "semantic-release": "^17.0.7",
     "semistandard": "^13.0.1",
-    "ts-jest": "^24.0.2",
-    "tslib": "^1.10.0",
-    "tslint": "^5.18.0",
+    "ts-jest": "^24.3.0",
+    "tslib": "^1.11.1",
+    "tslint": "^5.20.1",
     "tslint-config-semistandard": "^8.0.1",
     "typescript": "~3.6.5"
   }
