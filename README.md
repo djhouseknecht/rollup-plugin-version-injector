@@ -98,12 +98,12 @@ Anything not specified/overwritten in your `versionInjector()` configuration wil
 ```js 
 {
   injectInComments: {
-    fileRegexp: /\.(js|html|css)$/g,
+    fileRegexp: /\.(js|html|css)$/,
     tag: 'Version: {version} - {date}',
     dateFormat: 'mmmm d, yyyy HH:MM:ss'
   },
   injectInTags: {
-    fileRegexp: /\.(js|html|css)$/g,
+    fileRegexp: /\.(js|html|css)$/,
     tagId: 'VI',
     dateFormat: 'mmmm d, yyyy HH:MM:ss'
   },
