@@ -260,7 +260,7 @@ function versionInjector(userConfig) {
                 }
                 logger.debug('file name', fileName);
                 const tmpBundle = chunk;
-                if (!tmpBundle || tmpBundle['isAsset']) {
+                if (!tmpBundle || tmpBundle.type === 'asset') {
                     logger.info('output bundle did not exist or was an asset - skipping', fileName);
                     return;
                 }
