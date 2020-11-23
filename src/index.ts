@@ -48,7 +48,7 @@ export default function versionInjector (userConfig?: Partial<VersionInjectorCon
         logger.debug('file name', fileName);
         /* skip if the output bundle doesn't exist or if it is an assest */
         const tmpBundle = chunk;
-        if (!tmpBundle || tmpBundle['isAsset']) {
+        if (!tmpBundle || tmpBundle.type === 'asset') {
           logger.info('output bundle did not exist or was an asset - skipping', fileName);
           return;
         }
