@@ -1,6 +1,6 @@
 // import fs from 'fs';
 // import path from 'path';
-import { OutputBundle, OutputOptions, Plugin, OutputChunk } from 'rollup';
+import { OutputBundle, Plugin, OutputChunk } from 'rollup';
 import { merge } from 'lodash';
 import { defaultConfig } from './config/config';
 import { VIInjector } from './utils/injector';
@@ -18,59 +18,55 @@ export default function versionInjector (userConfig?: Partial<VersionInjectorCon
   const logger: VILogger = new VILogger(config.logLevel, config.logger);
   const injector: VIInjector = new VIInjector(logger);
 
-  let outputOptions: OutputOptions;
   let version: string;
 
   return {
     name: pluginName,
-    generateBundle (outOpts: OutputOptions) {
-      /* save options for writeBundle later */
-      outputOptions = outOpts;
-    },
-    writeBundle (outputBundle: OutputBundle) {
+    writeBundle(outputBundle: OutputBundle, bundle: any) {
       version = injector.getVersion(config.packageJson);
       logger.log(`${pluginName} started with version "${version}"`);
       logger.debug('config', config);
+      const outputFiles = Object.keys(bundle);
+      outputFiles.forEach((id) => {
+        const chunk = bundle[id];
+        const outputFile = chunk.fileName;
+        /* skip if no file was output */
+        if (!outputFile) {
+          logger.warn('no fileName found - skipping', chunk);
+          return;
+        }
 
-      /* skip if no file was output */
-      const outputFile = outputOptions.file;
-      if (!outputFile) {
-        logger.warn('no output file for outputOptions - skipping', outputOptions);
-        return;
-      }
+        logger.debug('output file', outputFile);
 
-      logger.debug('output file', outputFile);
+        /* skip if the filename is in the excludes list */
+        const fileName = chunk.fileName;
+        if (config.exclude.includes(fileName)) {
+          logger.info('file was in the exclude list - skipping', fileName);
+          return;
+        }
 
-      /* skip if the filename is in the excludes list */
-      const fileName = Object.keys(outputBundle)[0];
-      if (config.exclude.includes(fileName)) {
-        logger.info('file was in the exclude list - skipping', fileName);
-        return;
-      }
+        logger.debug('file name', fileName);
+        /* skip if the output bundle doesn't exist or if it is an assest */
+        const tmpBundle = chunk;
+        if (!tmpBundle || tmpBundle['isAsset']) {
+          logger.info('output bundle did not exist or was an asset - skipping', fileName);
+          return;
+        }
 
-      logger.debug('file name', fileName);
+        /* get the code from the bundle */
+        let code = (tmpBundle as OutputChunk).code;
 
-      /* skip if the output bundle doesn't exist or if it is an assest */
-      const tmpBundle = outputBundle[fileName];
-      if (!tmpBundle || tmpBundle['isAsset']) {
-        logger.info('output bundle did not exist or was an asset - skipping', tmpBundle);
-        return;
-      }
+        injector.setCode(code);
+        injector.injectIntoTags(config.injectInTags, fileName, version);
+        injector.injectIntoComments(config.injectInComments, fileName, version);
 
-      /* get the code from the bundle */
-      let code = (tmpBundle as OutputChunk).code;
-
-      injector.setCode(code);
-      injector.injectIntoTags(config.injectInTags, fileName, version);
-      injector.injectIntoComments(config.injectInComments, fileName, version);
-
-      if (injector.isCodeChanged()) {
-        injector.writeToFile(outputFile);
-      } else {
-        logger.log(`file was not changed. did not write to file "${fileName}"`);
-      }
-
+        if (injector.isCodeChanged()) {
+          injector.writeToFile(`${outputBundle.dir}/${outputFile}`);
+        } else {
+          logger.log(`file was not changed. did not write to file "${fileName}"`);
+        }
+      });
       logger.log(`${pluginName} finished`);
     }
-  } as Partial<Plugin>;
+  } as unknown as Partial<Plugin>;
 }
