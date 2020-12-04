@@ -1,5 +1,4 @@
 import fs from 'fs';
-import path from 'path';
 import dateformat from 'dateformat';
 import { VIInjector } from '../../../src/utils/injector';
 import { ILogger, SupportedFileExtensions } from '../../../src/types/interfaces';
@@ -35,25 +34,6 @@ describe('VIInjector', () => {
       injector.setCode(code);
       expect(injector['code']).toBe(code);
       expect(injector['codeChanged']).toBe(false);
-    });
-  });
-
-  describe.skip('writeToFile()', () => {
-    test('should write to file and log a message', () => {
-      // TODO: this gives back a Max Call error...
-      const code = "function() { return \'awesome\' }";
-      const outputFile = 'file.js'
-      const cwd = '/users/djhouse/final/';
-      jest.spyOn(process, 'cwd').mockImplementation(() => cwd);
-      const resolveSpy = jest.spyOn(path, 'resolve').mockImplementation(() => cwd + outputFile);
-      const writeSpy = jest.spyOn(fs, 'writeFileSync').mockImplementation(() => null);
-
-      injector.setCode(code);
-      injector.writeToFile(outputFile);
-      console.log('wrote')
-      expect(resolveSpy).toHaveBeenCalledWith(cwd, outputFile);
-      expect(writeSpy).toHaveBeenCalledWith(cwd + outputFile, code);
-      expect(logger.log).toHaveBeenCalled();
     });
   });
 

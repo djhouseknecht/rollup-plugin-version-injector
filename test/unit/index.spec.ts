@@ -1,6 +1,5 @@
 import versionInjector from '../../src/index';
 import { VersionInjectorConfig } from '../../src/types/interfaces';
-import { OutputOptions } from 'rollup';
 import { VILogger } from '../../src/utils/logger';
 import { VIInjector } from '../../src/utils/injector';
 
@@ -44,92 +43,69 @@ describe('injectVersion()', () => {
     expect(result.name).toBe('version-injector');
   });
 
-  test('should log a warning and return if no file was generated in OutputOptions', () => {
-    const result = versionInjector(basicConfig) as any;
-    const outputOptions = { file: undefined } as OutputOptions;
-    result.generateBundle(outputOptions, {} as any, false);
-    const outputBundle = {};
-    expect(result.writeBundle(outputBundle)).toBe(undefined);
-    expect(loggerSpy.warn).toHaveBeenCalledWith('no output file for outputOptions - skipping', outputOptions);
-  });
-
   test('should log an info log and return if file is in the excludes list', () => {
     if (!basicConfig.exclude) basicConfig.exclude = [];
     basicConfig.exclude.push('file.js');
     const result = versionInjector(basicConfig) as any;
-    const outputOptions = { file: 'file.js' } as OutputOptions;
-    result.generateBundle(outputOptions, {} as any, false);
-    const outputBundle = {
-      'file.js': {}
+    const chunk = {
+      fileName: 'file.js'
     };
-    expect(result.writeBundle(outputBundle)).toBe(undefined);
+    expect(result.renderChunk('code', chunk)).toBe(undefined);
     expect(loggerSpy.info).toHaveBeenCalledWith('file was in the exclude list - skipping', 'file.js');
     basicConfig.exclude = [];
   });
 
-  test('should log an info log and return if output bundle does not exist', () => {
-    const result = versionInjector(basicConfig) as any;
-    const outputOptions = { file: 'file.js' } as OutputOptions;
-    result.generateBundle(outputOptions, {} as any, false);
-    const outputBundle = {};
-    expect(result.writeBundle(outputBundle)).toBe(undefined);
-    expect(loggerSpy.info).toHaveBeenCalledWith('output bundle did not exist or was an asset - skipping', undefined);
-  });
-
   test('should log an info log and return if output bundle is an asset', () => {
     const result = versionInjector(basicConfig) as any;
-    const outputOptions = { file: 'file.js' } as OutputOptions;
-    result.generateBundle(outputOptions, {} as any, false);
-    const outputBundle = {
-      'file.js': { isAsset: true }
+    const chunk = {
+      fileName: 'file.js',
+      type: 'asset'
     };
-    expect(result.writeBundle(outputBundle)).toBe(undefined);
-    expect(loggerSpy.info).toHaveBeenCalledWith('output bundle did not exist or was an asset - skipping', { isAsset: true });
+    expect(result.renderChunk('code', chunk)).toBe(undefined);
+    expect(loggerSpy.info).toHaveBeenCalledWith('output bundle was an asset - skipping', chunk.fileName);
   });
 
   test('should call injector setCode(), injectIntoTags(), and injectIntoComments() with the proper config and log if the file was not changed', () => {
     const result = versionInjector(basicConfig) as any;
-    const outputOptions = { file: 'file.js' } as OutputOptions;
-    result.generateBundle(outputOptions, {} as any, false);
     const code = 'var = 19;';
-    const outputBundle = {
-      'file.js': { code }
+    const chunk = {
+      fileName: 'file.js',
+      code
     };
 
     const setCodeSpy = jest.spyOn(VIInjector.prototype, 'setCode').mockImplementation(() => null);
     const injectIntoTagsSpy = jest.spyOn(VIInjector.prototype, 'injectIntoTags').mockImplementation(() => null);
     const injectIntoCommentsSpy = jest.spyOn(VIInjector.prototype, 'injectIntoComments').mockImplementation(() => null);
-    const writeToFileSpy = jest.spyOn(VIInjector.prototype, 'writeToFile').mockImplementation(() => null);
+    //const writeToFileSpy = jest.spyOn(VIInjector.prototype, 'writeToFile').mockImplementation(() => null);
     jest.spyOn(VIInjector.prototype, 'isCodeChanged').mockImplementation(() => false);
 
-    expect(result.writeBundle(outputBundle)).toBe(undefined);
+    expect(result.renderChunk(code, chunk)).toBe(undefined);
     expect(setCodeSpy).toHaveBeenCalledWith(code);
     expect(injectIntoTagsSpy).toHaveBeenCalledWith(basicConfig.injectInTags, 'file.js', '1.1.1');
     expect(injectIntoCommentsSpy).toHaveBeenCalledWith(basicConfig.injectInComments, 'file.js', '1.1.1');
-    expect(writeToFileSpy).not.toHaveBeenCalled();
+    //expect(writeToFileSpy).not.toHaveBeenCalled();
     expect(loggerSpy.log).toHaveBeenCalledWith('file was not changed. did not write to file "file.js"');
   });
 
   test('should call injector setCode(), injectIntoTags(), and injectIntoComments() with the proper config and log if the file was changed', () => {
     const result = versionInjector(basicConfig) as any;
-    const outputOptions = { file: 'file.js' } as OutputOptions;
-    result.generateBundle(outputOptions, {} as any, false);
     const code = 'var = 19;';
-    const outputBundle = {
-      'file.js': { code }
+    const chunk = {
+      fileName: 'file.js',
+      code
     };
 
     const setCodeSpy = jest.spyOn(VIInjector.prototype, 'setCode').mockImplementation(() => null);
     const injectIntoTagsSpy = jest.spyOn(VIInjector.prototype, 'injectIntoTags').mockImplementation(() => null);
     const injectIntoCommentsSpy = jest.spyOn(VIInjector.prototype, 'injectIntoComments').mockImplementation(() => null);
-    const writeToFileSpy = jest.spyOn(VIInjector.prototype, 'writeToFile').mockImplementation(() => null);
+    //const writeToFileSpy = jest.spyOn(VIInjector.prototype, 'writeToFile').mockImplementation(() => null);
     jest.spyOn(VIInjector.prototype, 'isCodeChanged').mockImplementation(() => true);
 
-    expect(result.writeBundle(outputBundle)).toBe(undefined);
+    expect(result.renderChunk(code, chunk)).toStrictEqual({code:''});
     expect(setCodeSpy).toHaveBeenCalledWith(code);
     expect(injectIntoTagsSpy).toHaveBeenCalledWith(basicConfig.injectInTags, 'file.js', '1.1.1');
     expect(injectIntoCommentsSpy).toHaveBeenCalledWith(basicConfig.injectInComments, 'file.js', '1.1.1');
-    expect(writeToFileSpy).toHaveBeenCalledWith('file.js');
+    //expect(writeToFileSpy).toHaveBeenCalledWith('dist/file.js');
     expect(loggerSpy.log).toHaveBeenCalledWith('version-injector finished');
   });
 });

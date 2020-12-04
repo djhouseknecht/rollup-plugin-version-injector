@@ -50,15 +50,8 @@ export class VIInjector {
     return this.codeChanged;
   }
 
-  /**
-   * Resolve the cwd and relative path to a file to write
-   *  the class' code to that file.
-   * @param outputFile relative path to file
-   */
-  public writeToFile (outputFile: string): void {
-    const finalFile = path.resolve(process.cwd(), outputFile);
-    fs.writeFileSync(finalFile, this.code);
-    this.logger.log(`wrote to file: "${finalFile}"`);
+  public getCode (): string {
+    return this.code
   }
 
 	/**
@@ -92,7 +85,7 @@ export class VIInjector {
    * @param fileName filename of file (to validate file against configured fileRegexp)
    * @param version version to inject
    */
-  public injectIntoTags (config: InjectInTagsConfig | false, fileName: string, version: string): void {
+  public injectIntoTags (config: InjectInTagsConfig | false | undefined, fileName: string, version: string): void {
     if (!this.code) {
       this.logger.error('code not set in VIInjector called from injectIntoTags()');
     }
@@ -124,7 +117,7 @@ export class VIInjector {
    * @param fileName filename of file (to validate file against configured fileRegexp and file extension)
    * @param version version to inject
    */
-  public injectIntoComments (config: InjectInCommentsConfig | false, fileName: string, version: string): void {
+  public injectIntoComments (config: InjectInCommentsConfig | false | undefined, fileName: string, version: string): void {
     if (!this.code) {
       this.logger.error('code not set in VIInjector called from injectIntoComments()');
     }
