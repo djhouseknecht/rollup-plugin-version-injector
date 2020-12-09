@@ -51,7 +51,7 @@ export class VIInjector {
   }
 
   public getCode (): string {
-    return this.code
+    return this.code;
   }
 
 	/**

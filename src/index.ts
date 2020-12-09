@@ -21,7 +21,7 @@ export default function versionInjector (userConfig?: Partial<VersionInjectorCon
   return {
     name: pluginName,
     renderChunk (code: string, chunk: OutputChunk | OutputAsset) {
-      logger.debug('chunk', chunk)
+      logger.debug('chunk', chunk);
       logger.log(`${pluginName} started with version "${version}"`);
       logger.debug('config', config);
       const fileName = chunk.fileName;
@@ -29,7 +29,7 @@ export default function versionInjector (userConfig?: Partial<VersionInjectorCon
         logger.info('file was in the exclude list - skipping', fileName);
         return;
       }
-      if (chunk.type=='asset') {
+      if (chunk.type === 'asset') {
         logger.info('output bundle was an asset - skipping', fileName);
         return;
       }
@@ -38,7 +38,7 @@ export default function versionInjector (userConfig?: Partial<VersionInjectorCon
       injector.injectIntoComments(config.injectInComments, fileName, version);
       if (injector.isCodeChanged()) {
         logger.log(`${pluginName} finished`);
-        return { code: injector.getCode() }
+        return { code: injector.getCode() };
       } else {
         logger.log(`file was not changed. did not write to file "${fileName}"`);
       }
