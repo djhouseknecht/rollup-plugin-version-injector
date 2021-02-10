@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import dateformat from 'dateformat';
+
 import { ILogger, SupportedFileExtensions, InjectInTagsConfig, InjectInCommentsConfig } from '../types/interfaces';
 
 /**
@@ -100,7 +101,7 @@ export class VIInjector {
 
       /* if it made changes */
       if (results.replaceCount) {
-        this.logger.log(`found and replaced [${results.replaceCount}] version tags in`, fileName);
+        this.logger.info(`found and replaced [${results.replaceCount}] version tags in`, fileName);
         this.codeChanged = true;
         this.code = results.code;
       } else {
@@ -134,7 +135,7 @@ export class VIInjector {
           this.code
         );
         this.codeChanged = true;
-        this.logger.info(`injected version as comment`);
+        this.logger.info('injected version as comment in', fileName);
       } else {
         this.logger.warn(`file extension not supported for injecting into comments "${fileExt}"`);
       }
@@ -148,7 +149,7 @@ export class VIInjector {
    * 	and/or date must be within the opening (`[${tagId}]`) and closing (`[/${tagId}]`) tags.
    * @param tagId tag id to look for
    * @param dateFormat date format of today's date to be injected
-   * @param version verions to be injecte3d
+   * @param version verions to be injected
    * @param code code to inject into
    */
   private replaceVersionInTags (tagId: string, dateFormat: string, version: string, code: string): { code: string, replaceCount: number } {

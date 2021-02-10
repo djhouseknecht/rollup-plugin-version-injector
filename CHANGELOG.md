@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/djhouseknecht/rollup-plugin-version-injector/compare/v1.2.2...HEAD)
 See all unlreased changes made to this project.
 
+## [1.3.2](https://github.com/djhouseknecht/rollup-plugin-version-injector/compare/v1.3.1...v1.3.2) - 2021-02-10
+### Fixed
+- [Issue #18](https://github.com/djhouseknecht/rollup-plugin-version-injector/issues/18): converted `log()` calls to `info()` calls to respect configured VI `logLevel`. Got tests back up to 100%.
+
 ## [1.3.1](https://github.com/djhouseknecht/rollup-plugin-version-injector/compare/v1.3.0...v1.3.1) - 2021-02-10
 ### Fixed
 - [Issue #17](https://github.com/djhouseknecht/rollup-plugin-version-injector/issues/17): corrected rollup warning about source maps not being accurate. VI does not need to generate source maps.
