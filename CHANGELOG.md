@@ -8,14 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/djhouseknecht/rollup-plugin-version-injector/compare/v1.2.2...HEAD)
 See all unlreased changes made to this project.
 
-## [1.2.2](https://github.com/djhouseknecht/rollup-plugin-version-injector/compare/v1.2.2...v1.3.0) - 2020-12-09
+## [1.3.1](https://github.com/djhouseknecht/rollup-plugin-version-injector/compare/v1.3.0...v1.3.1) - 2021-02-10
+### Fixed
+- [Issue #17](https://github.com/djhouseknecht/rollup-plugin-version-injector/issues/17): corrected rollup warning about source maps not being accurate. VI does not need to generate source maps.
+  Updated VI config to tell rollup that existing source maps are still valid.
+
+## [1.3.0](https://github.com/djhouseknecht/rollup-plugin-version-injector/compare/v1.2.2...v1.3.0) - 2020-12-09
 ### Fixed
 - [Issue #10](https://github.com/djhouseknecht/rollup-plugin-version-injector/issues/10): work with chunks and output folders
 
 ### Added
 - Upgraded to rollup v2
 
-### Security 
+### Security
 - Upgraded vulnerable dependencies
 
 ## [1.2.2](https://github.com/djhouseknecht/rollup-plugin-version-injector/compare/v1.2.1...v1.2.2) - 2020-04-24
@@ -23,13 +28,13 @@ See all unlreased changes made to this project.
 - [Issue #2](https://github.com/djhouseknecht/rollup-plugin-version-injector/issues/2): updated file regex to not be global
 
 ## [1.2.1](https://github.com/djhouseknecht/rollup-plugin-version-injector/compare/v1.2.0...v1.2.1) - 2020-04-24
-### Security 
+### Security
 - Upgraded vulnerable dependencies
 ### Added
 - semantic-release, travis, and commitizen for easier maintainability
 
 ## [1.2.0](https://github.com/djhouseknecht/rollup-plugin-version-injector/compare/v1.1.3...v1.2.0) - 2020-02-03
-### Security 
+### Security
 - Upgraded vulnerable dependencies
 ### Changed
 - Changed default DateTimeStamp format from `June 9, 2007` to `June 9, 2007 17:46:12` [dateformat]'s `'longDate'` to `'mmmm d, yyyy HH:MM:ss'`
@@ -37,7 +42,7 @@ See all unlreased changes made to this project.
 
 
 ## [1.1.3](https://github.com/djhouseknecht/rollup-plugin-version-injector/compare/v1.1.2...v1.1.3) - 2019-08-27
-### Security 
+### Security
 - Upgraded vulnerable dependencies
 
 ## [1.1.2](https://github.com/djhouseknecht/rollup-plugin-version-injector/compare/v1.1.0...v1.1.2) - 2019-07-25
@@ -45,7 +50,7 @@ See all unlreased changes made to this project.
 - Pre-push hooks
 ### Fixed
 - Typos in README
-### Security 
+### Security
 - Upgraded vulnerable dependencies
 
 
