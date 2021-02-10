@@ -38,7 +38,7 @@ export default function versionInjector (userConfig?: Partial<VersionInjectorCon
       injector.injectIntoComments(config.injectInComments, fileName, version);
       if (injector.isCodeChanged()) {
         logger.log(`${pluginName} finished`);
-        return { code: injector.getCode() };
+        return { code: injector.getCode(), map: null };
       } else {
         logger.log(`file was not changed. did not write to file "${fileName}"`);
       }

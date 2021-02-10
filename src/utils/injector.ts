@@ -12,20 +12,20 @@ export class VIInjector {
   private codeChanged: boolean;
   private code: string;
 
-	/**
-	 * Construct utilities and pass in the desired logger
-	 * @param logger desired logger
-	 */
+  /**
+   * Construct utilities and pass in the desired logger
+   * @param logger desired logger
+   */
   constructor (logger: ILogger) {
     this.logger = logger;
     this.codeChanged = false;
     this.code = '';
   }
 
-	/**
-	 * Return the version number from `package.json`
-	 * @param packagePath path to `package.json`
-	 */
+  /**
+   * Return the version number from `package.json`
+   * @param packagePath path to `package.json`
+   */
   public getVersion (packagePath: string): string {
     const packageFile = JSON.parse(
       fs.readFileSync(path.resolve(packagePath), 'utf8')
@@ -54,10 +54,10 @@ export class VIInjector {
     return this.code;
   }
 
-	/**
-	 * Determine if the file extension is in the {@link SupportedFileExtensions}
-	 * @param fileName file name
-	 */
+  /**
+   * Determine if the file extension is in the {@link SupportedFileExtensions}
+   * @param fileName file name
+   */
   public getFileExtension (fileName: string): SupportedFileExtensions | null {
     let len: number = fileName.length;
     let ext: SupportedFileExtensions | null = null;
@@ -143,14 +143,14 @@ export class VIInjector {
     }
   }
 
-	/**
-	 * Inject the version number and/or date into the passed in code. Version
-	 * 	and/or date must be within the opening (`[${tagId}]`) and closing (`[/${tagId}]`) tags.
-	 * @param tagId tag id to look for
-	 * @param dateFormat date format of today's date to be injected
-	 * @param version verions to be injecte3d
-	 * @param code code to inject into
-	 */
+  /**
+   * Inject the version number and/or date into the passed in code. Version
+   * 	and/or date must be within the opening (`[${tagId}]`) and closing (`[/${tagId}]`) tags.
+   * @param tagId tag id to look for
+   * @param dateFormat date format of today's date to be injected
+   * @param version verions to be injecte3d
+   * @param code code to inject into
+   */
   private replaceVersionInTags (tagId: string, dateFormat: string, version: string, code: string): { code: string, replaceCount: number } {
     this.logger.debug(`starting injectIntoTags() with args: { tagId: "${tagId}", dateFormat: ${dateFormat}, version: ${version}, code: "${code ? code.substring(0, 12) + '...' : code}" }`);
     let replaceCount: number = 0;
@@ -178,16 +178,16 @@ export class VIInjector {
     return { code, replaceCount };
   }
 
-	/**
-	 * Inject the version number and/or date into the passed in tag.
-	 *  File extension must be in the {@link SupportedFileExtensions} type.
-	 * 	Extension is used to determin type of comment.
-	 * @param tag to look in
-	 * @param dateFormat date format of today's date to be injected
-	 * @param version verions to be injecte3d
-	 * @param fileType file type
-	 * @param code code to inject into
-	 */
+  /**
+   * Inject the version number and/or date into the passed in tag.
+   *  File extension must be in the {@link SupportedFileExtensions} type.
+   * 	Extension is used to determin type of comment.
+   * @param tag to look in
+   * @param dateFormat date format of today's date to be injected
+   * @param version verions to be injecte3d
+   * @param fileType file type
+   * @param code code to inject into
+   */
   private replaceVersionInComments (tag: string, dateFormat: string, version: string, fileExtension: SupportedFileExtensions, code: string): string {
     this.logger.debug(`starting injectIntoComments() with args: { tag: "${tag}", dateFormat: "${dateFormat}", version: "${version}", fileExtension: "${fileExtension}", code: "${code ? code.substring(0, 12) + '...' : code}" }`);
     let injectValue = this.replaceVersion(tag, version);
@@ -216,12 +216,12 @@ export class VIInjector {
     return code;
   }
 
-	/**
-	 * Remove the tagId from the passed in tag. Tags are wrapped in brackets `[]`
-	 * 	It will remove `[${tagId}]` and `[/${tagId}]`
-	 * @param tag tag string
-	 * @param tagId tag id that should be stripped
-	 */
+  /**
+   * Remove the tagId from the passed in tag. Tags are wrapped in brackets `[]`
+   * 	It will remove `[${tagId}]` and `[/${tagId}]`
+   * @param tag tag string
+   * @param tagId tag id that should be stripped
+   */
   private stripTags (tag: string, tagId: string): string {
     const regexp = new RegExp(`(\\[${tagId}]|\\[\\/${tagId}])`, 'g');
     this.logger.debug(`tag before stripping tagId`, tag);
@@ -242,11 +242,11 @@ export class VIInjector {
     // return new RegExp(`(\\[${tagId}])(([a-zA-Z{} ,:;!()_@\\-"'\\\\\\/\\d])+)(\\[\\/${tagId}])`, 'g');
   }
 
-	/**
-	 * Replace `{version}` with the version passed in
-	 * @param tag tag string
-	 * @param version version number passed in
-	 */
+  /**
+   * Replace `{version}` with the version passed in
+   * @param tag tag string
+   * @param version version number passed in
+   */
   private replaceVersion (tag: string, version: string): string {
     this.logger.debug(`tag before replacing version: "${tag}"`);
     let newTag = tag.replace('{version}', version);
@@ -257,12 +257,12 @@ export class VIInjector {
     return newTag;
   }
 
-	/**
-	 * Replace `{date}` with the current date in the passed in format.
-	 * 	See [dateformat](https://www.npmjs.com/package/dateformat) for supported formats
-	 * @param tag tag string
-	 * @param version version number passed in
-	 */
+  /**
+   * Replace `{date}` with the current date in the passed in format.
+   * 	See [dateformat](https://www.npmjs.com/package/dateformat) for supported formats
+   * @param tag tag string
+   * @param version version number passed in
+   */
   private replaceDate (tag: string, dateFormat: string): string {
     this.logger.debug(`tag before replacing date: "${tag}"`);
     let newTag = tag.replace('{date}', dateformat(dateFormat));

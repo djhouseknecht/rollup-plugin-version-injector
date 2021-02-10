@@ -10,7 +10,7 @@ export default {
   ],
   external,
   output: [
-    { file: pkg.main, format: 'cjs' },
+    { file: pkg.main, format: 'cjs', exports: 'auto' },
     { file: pkg.module, format: 'es' }
   ]
 };
