@@ -22,7 +22,7 @@ export default function versionInjector (userConfig?: Partial<VersionInjectorCon
     name: pluginName,
     renderChunk (code: string, chunk: OutputChunk | OutputAsset) {
       logger.debug('chunk', chunk);
-      logger.log(`${pluginName} started with version "${version}"`);
+      logger.info(`${pluginName} started with version "${version}"`);
       logger.debug('config', config);
       const fileName = chunk.fileName;
       if (config.exclude.includes(fileName)) {
@@ -37,10 +37,10 @@ export default function versionInjector (userConfig?: Partial<VersionInjectorCon
       injector.injectIntoTags(config.injectInTags, fileName, version);
       injector.injectIntoComments(config.injectInComments, fileName, version);
       if (injector.isCodeChanged()) {
-        logger.log(`${pluginName} finished`);
+        logger.info(`${pluginName} finished`);
         return { code: injector.getCode(), map: null };
       } else {
-        logger.log(`file was not changed. did not write to file "${fileName}"`);
+        logger.info(`file was not changed. did not write to file "${fileName}"`);
       }
 
     }

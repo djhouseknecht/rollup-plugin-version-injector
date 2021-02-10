@@ -1,9 +1,9 @@
 export interface VersionInjectorConfig {
 
-	/**
-	 * relative path to project's package.json
-	 * @default './package.json'
-	 */
+  /**
+   * relative path to project's package.json
+   * @default './package.json'
+   */
   packageJson: string;
   injectInComments: false | InjectInCommentsConfig;
   injectInTags: false | InjectInTagsConfig;
@@ -33,4 +33,6 @@ export interface ILogger {
 }
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'log';
+export type LogNumericValue = 1 | 2 | 3 | 4; // these correspond with LogLevel
+
 export type SupportedFileExtensions = 'js' | 'html' | 'css';

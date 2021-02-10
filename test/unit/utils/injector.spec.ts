@@ -109,7 +109,7 @@ describe('VIInjector', () => {
       injector.injectIntoTags(config, 'file.js', '12.1.1');
       expect(injector.isCodeChanged()).toBe(true);
       expect(injector['code']).toBe(changedCode);
-      expect(logger.log).toHaveBeenCalledWith('found and replaced [2] version tags in', 'file.js');
+      expect(logger.info).toHaveBeenCalledWith('found and replaced [2] version tags in', 'file.js');
     });
   });
 
@@ -154,7 +154,7 @@ describe('VIInjector', () => {
       injector.injectIntoComments(config, 'file.js', '12.1.1');
       expect(injector.isCodeChanged()).toBe(true);
       expect(injector['code']).toBe(expectedCode);
-      expect(logger.info).toHaveBeenCalledWith('injected version as comment');
+      expect(logger.info).toHaveBeenCalledWith('injected version as comment in', 'file.js');
     });
   });
 

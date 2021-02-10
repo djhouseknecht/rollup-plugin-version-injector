@@ -84,7 +84,7 @@ describe('injectVersion()', () => {
     expect(injectIntoTagsSpy).toHaveBeenCalledWith(basicConfig.injectInTags, 'file.js', '1.1.1');
     expect(injectIntoCommentsSpy).toHaveBeenCalledWith(basicConfig.injectInComments, 'file.js', '1.1.1');
     //expect(writeToFileSpy).not.toHaveBeenCalled();
-    expect(loggerSpy.log).toHaveBeenCalledWith('file was not changed. did not write to file "file.js"');
+    expect(loggerSpy.info).toHaveBeenCalledWith('file was not changed. did not write to file "file.js"');
   });
 
   test('should call injector setCode(), injectIntoTags(), and injectIntoComments() with the proper config and log if the file was changed', () => {
@@ -106,6 +106,6 @@ describe('injectVersion()', () => {
     expect(injectIntoTagsSpy).toHaveBeenCalledWith(basicConfig.injectInTags, 'file.js', '1.1.1');
     expect(injectIntoCommentsSpy).toHaveBeenCalledWith(basicConfig.injectInComments, 'file.js', '1.1.1');
     //expect(writeToFileSpy).toHaveBeenCalledWith('dist/file.js');
-    expect(loggerSpy.log).toHaveBeenCalledWith('version-injector finished');
+    expect(loggerSpy.info).toHaveBeenCalledWith('version-injector finished');
   });
 });
