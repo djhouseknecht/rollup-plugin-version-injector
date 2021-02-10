@@ -101,7 +101,7 @@ describe('injectVersion()', () => {
     //const writeToFileSpy = jest.spyOn(VIInjector.prototype, 'writeToFile').mockImplementation(() => null);
     jest.spyOn(VIInjector.prototype, 'isCodeChanged').mockImplementation(() => true);
 
-    expect(result.renderChunk(code, chunk)).toStrictEqual({code:''});
+    expect(result.renderChunk(code, chunk)).toStrictEqual({ code: '', map: null });
     expect(setCodeSpy).toHaveBeenCalledWith(code);
     expect(injectIntoTagsSpy).toHaveBeenCalledWith(basicConfig.injectInTags, 'file.js', '1.1.1');
     expect(injectIntoCommentsSpy).toHaveBeenCalledWith(basicConfig.injectInComments, 'file.js', '1.1.1');
