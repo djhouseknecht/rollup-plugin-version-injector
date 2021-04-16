@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Issue #22](https://github.com/djhouseknecht/rollup-plugin-version-injector/issues/22): changed version injected into `.js` files to be multiline comments (`/* */`) to avoid issues
 with aggressive minifiers.
 
+### Security
+- Upgraded vulnerable dependencies
 
 # [1.3.2](https://github.com/djhouseknecht/rollup-plugin-version-injector/compare/v1.3.1...v1.3.2) - 2021-02-10
 ### Fixed
