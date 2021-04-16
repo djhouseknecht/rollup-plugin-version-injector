@@ -252,7 +252,7 @@ describe('VIInjector', () => {
       const version = '7.1.1';
       const fileExt: SupportedFileExtensions = 'js';
 
-      const expectedCode = `// 7.1.1 - ${dateformat(dateFormat)}\nfunction main() {
+      const expectedCode = `/* 7.1.1 - ${dateformat(dateFormat)} */\nfunction main() {
         return { great: 'application' }
       }`;
 
