@@ -195,12 +195,10 @@ export class VIInjector {
     injectValue = this.replaceDate(injectValue, dateFormat);
     let versionTag: string = '';
     switch (fileExtension) {
-      case 'js':
-        versionTag = `// ${injectValue}`;
-        break;
       case 'html':
         versionTag = `<!-- ${injectValue} -->`;
         break;
+      case 'js':
       case 'css':
         versionTag = `/* ${injectValue} */`;
         break;
