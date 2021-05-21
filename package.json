@@ -61,7 +61,7 @@
     "@types/dateformat": "^3.0.1",
     "@types/jest": "^26.0.16",
     "@types/lodash": "^4.14.165",
-    "@types/node": "^14.14.10",
+    "@types/node": "^15.6.0",
     "codecov": "^3.8.1",
     "commitizen": "^4.2.2",
     "cz-conventional-changelog": "^3.3.0",
