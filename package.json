@@ -69,7 +69,7 @@
     "pre-push": "^0.1.1",
     "rollup": "^2.34.1",
     "rollup-plugin-typescript": "^1.0.1",
-    "semantic-release": "^17.3.0",
+    "semantic-release": "^19.0.3",
     "semistandard": "^16.0.0",
     "ts-jest": "^26.4.4",
     "tslib": "^2.0.3",
