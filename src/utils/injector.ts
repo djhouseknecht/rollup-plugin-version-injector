@@ -264,7 +264,10 @@ export class VIInjector {
    */
   private replaceDate (tag: string, dateFormat: string): string {
     this.logger.debug(`tag before replacing date: "${tag}"`);
-    let newTag = tag.replace('{date}', dateformat(dateFormat));
+    const date = "SOURCE_DATE_EPOCH" in process.env
+      ? new Date(+(process.env.SOURCE_DATE_EPOCH as string)) //TODO memoise?
+      : new Date();
+    let newTag = tag.replace('{date}', dateformat(date, dateFormat));
     if (newTag === tag) {
       this.logger.debug(`could not find "{date}" placeholder in tag: "${tag}"`);
     }
